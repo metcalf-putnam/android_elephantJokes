@@ -1,0 +1,38 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+ext{
+    supportlib_version = '27.0.2'
+}
+
+allprojects {
+    repositories {
+        jcenter()
+
+        maven {
+            url 'https://maven.google.com'
+        }
+    }
+}
+
+//Taken from:
+//https://stackoverflow.com/questions/42581963/all-com-android-support-libraries-must-use-the-exact-same-version
+//for dependency issues with library
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex') ) {
+                details.useVersion "$supportlib_version"
+            }
+        }
+    }
+}
