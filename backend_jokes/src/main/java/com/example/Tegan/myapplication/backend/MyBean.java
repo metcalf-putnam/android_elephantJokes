@@ -1,6 +1,8 @@
-package com.udacity.gradle.builditbigger.backend;
+package com.example.Tegan.myapplication.backend;
 
-/** The object model for the data we are sending through endpoints */
+/**
+ * The object model for the data we are sending through endpoints
+ */
 public class MyBean {
 
     private String myData;
