@@ -12,12 +12,6 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Named;
 
 /**
  * An endpoint class we are exposing
@@ -33,35 +27,18 @@ import javax.inject.Named;
 )
 public class MyEndpoint {
 
-    private static Jokes mJokesList = new Jokes();
+    private static final Jokes mJokesList = new Jokes();
 
     /**
-     * A simple endpoint method that takes a name and says Hi back
+     * endpoint method that returns a json string of hilarious elephant jokes
      */
-    @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("name") String name) {
-        MyBean response = new MyBean();
-        response.setData("Hi, " + name);
 
-        return response;
-    }
     @ApiMethod(name = "jokesList")
     public JokesJSON jokes() {
         JSONArray jokeArray = mJokesList.getJokes();
         JokesJSON ret = new JokesJSON();
         ret.setJson(jokeArray.toJSONString());
         return ret;
-//        List<JokeBean> jokes = new ArrayList<>();
-//        for (int i = 0; i < jokeArray.size(); i++) {
-//            JSONObject j = jokeArray.
-//            String q = j.get("question");
-//
-//        }
-//        JokeBean joke = new JokeBean();
-//        joke.setAnswer("testaNSWER");
-//        joke.setQuestion("testQuestion");
-//        jokes.add(joke);
 
-//        return jokes;
     }
 }

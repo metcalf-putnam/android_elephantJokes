@@ -3,25 +3,18 @@ package com.example.patrice.jokedisplayer;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-//import com.example.tegan.myapplication.backend.myApi.model.JokeBean;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class JokeActivity extends AppCompatActivity {
     private JSONArray mJokes;
-//    private ArrayList<HashMap>  mJokes;
     private int mNumjokes;
     private int mCurrentJoke;
+    private boolean mAnswered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +22,30 @@ public class JokeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_joke);
 
         Intent intentThatStartedThisActivity = getIntent();
-        if(savedInstanceState == null && intentThatStartedThisActivity != null){
+        if(savedInstanceState != null){
+            if(savedInstanceState.containsKey("jokes")){
+                String jokesJson = savedInstanceState.getString("jokes");
+                retrieveJokes(jokesJson);
+            }
+            if(savedInstanceState.containsKey("currentJoke")){
+                mCurrentJoke = savedInstanceState.getInt("currentJoke");
+            }
+            if(savedInstanceState.containsKey("answered")){
+                mAnswered = savedInstanceState.getBoolean("answered", false);
+            }
+        } else if(intentThatStartedThisActivity != null){
             String jokesJson = intentThatStartedThisActivity.getStringExtra("jokes");
-            try {
-                mJokes = new JSONArray(jokesJson);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                // rawr!!!! ish bad to eat exceptions grrr
-            }
-            if (mJokes != null) {
-                mNumjokes = mJokes.length();
-                mCurrentJoke = 0;
-            }
-//            mJokes = (ArrayList<HashMap>) intentThatStartedThisActivity.getSerializableExtra("jokes");
-//            mNumjokes = mJokes.size();
-//            mCurrentJoke = 0;
+            retrieveJokes(jokesJson);
+            mCurrentJoke = 0;
+            mAnswered = false;
         }
+
         setJoke();
     }
     public void navigateNext(View view){
         if(mCurrentJoke < mNumjokes){
             mCurrentJoke++;
+            mAnswered = false;
             setJoke();
         }
     }
@@ -57,10 +53,21 @@ public class JokeActivity extends AppCompatActivity {
     public void navigatePrevious(View view){
         if(mCurrentJoke > 0){
             mCurrentJoke--;
+            mAnswered = false;
             setJoke();
         }
     }
 
+    private void retrieveJokes(String jokesJson){
+        try {
+            mJokes = new JSONArray(jokesJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mJokes != null) {
+            mNumjokes = mJokes.length();
+        }
+    }
     private void setJoke(){
         checkVisibility();
 
@@ -75,7 +82,6 @@ public class JokeActivity extends AppCompatActivity {
             answer = jokeObj.getString("answer");
         } catch (JSONException e) {
             e.printStackTrace();
-            // gtrrrrr
         }
 
         joke.setText(question);
@@ -88,9 +94,13 @@ public class JokeActivity extends AppCompatActivity {
         Button showAnswer = findViewById(R.id.button_show_answer);
         TextView answer = findViewById(R.id.tv_joke_answer);
 
-        answer.setVisibility(View.GONE);
-        showAnswer.setVisibility(View.VISIBLE);
-
+        if(mAnswered){
+            answer.setVisibility(View.VISIBLE);
+            showAnswer.setVisibility(View.GONE);
+        }else{
+            answer.setVisibility(View.GONE);
+            showAnswer.setVisibility(View.VISIBLE);
+        }
 
         if(mCurrentJoke == 0){
             previousButton.setVisibility(View.GONE);
@@ -111,5 +121,16 @@ public class JokeActivity extends AppCompatActivity {
 
         showAnswer.setVisibility(View.GONE);
         answer.setVisibility(View.VISIBLE);
+        mAnswered = true;
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        String jsonString = mJokes.toString();
+        outState.putString("jokes", jsonString);
+        outState.putInt("currentJoke", mCurrentJoke);
+        outState.putBoolean("answered", mAnswered);
+        super.onSaveInstanceState(outState);
+    }
+
 }

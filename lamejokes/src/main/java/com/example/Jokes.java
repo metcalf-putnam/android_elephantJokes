@@ -1,12 +1,10 @@
 package com.example;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -29,12 +27,6 @@ public class Jokes {
         }
     }
 
-    public JSONObject getJoke(int i){
-        if(mJokes == null || mJokes.size() <= i){
-            return null;
-        }
-        return (JSONObject) mJokes.get(i);
-    }
     public JSONArray getJokes(){
         return mJokes;
     }
