@@ -6,9 +6,16 @@
 
 package com.example.Tegan.myapplication.backend;
 
+import com.example.Jokes;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Named;
 
@@ -26,6 +33,8 @@ import javax.inject.Named;
 )
 public class MyEndpoint {
 
+    private static Jokes mJokesList = new Jokes();
+
     /**
      * A simple endpoint method that takes a name and says Hi back
      */
@@ -36,5 +45,23 @@ public class MyEndpoint {
 
         return response;
     }
+    @ApiMethod(name = "jokesList")
+    public JokesJSON jokes() {
+        JSONArray jokeArray = mJokesList.getJokes();
+        JokesJSON ret = new JokesJSON();
+        ret.setJson(jokeArray.toJSONString());
+        return ret;
+//        List<JokeBean> jokes = new ArrayList<>();
+//        for (int i = 0; i < jokeArray.size(); i++) {
+//            JSONObject j = jokeArray.
+//            String q = j.get("question");
+//
+//        }
+//        JokeBean joke = new JokeBean();
+//        joke.setAnswer("testaNSWER");
+//        joke.setQuestion("testQuestion");
+//        jokes.add(joke);
 
+//        return jokes;
+    }
 }

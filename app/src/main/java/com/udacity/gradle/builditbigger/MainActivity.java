@@ -3,25 +3,26 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-import com.example.Jokes;
+import android.widget.TextView;
 import com.example.patrice.jokedisplayer.JokeActivity;
 
 
-public class MainActivity extends AppCompatActivity {
-    private Jokes mJokes;
+
+public class MainActivity extends AppCompatActivity
+    implements EndpointsAsyncTask.EndpointsAsyncTaskCallback{
+    private String mJokes = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
-        mJokes = new Jokes();
+        new EndpointsAsyncTask(this).execute();
+        //new EndpointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
+       // mJokes = new Jokes();
     }
 
 
@@ -52,9 +53,17 @@ public class MainActivity extends AppCompatActivity {
         Context context = MainActivity.this;
         Class destinationActivity = JokeActivity.class;
         Intent jokeIntent = new Intent(context, destinationActivity);
-        jokeIntent.putExtra("joke", mJokes.getJoke());
+        jokeIntent.putExtra("jokes", mJokes);
         startActivity(jokeIntent);
     }
 
 
+    @Override
+    public void onAsyncTaskComplete(String results) {
+        //make "tell joke" button visible (default should be gone), so cannot press button without results
+        TextView button = findViewById(R.id.button_tell_joke);
+        button.setVisibility(View.VISIBLE);
+        mJokes = results;
+        //Toast.makeText(MainActivity.this, "I'm a puppy "  + results, Toast.LENGTH_SHORT).show();
+    }
 }

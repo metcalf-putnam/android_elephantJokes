@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">JokeDisplayer</string>
     <string name="error_no_joke">So sorry, but there has been an error. No humor for you.</string>
+    <string name="next_joke">Next</string>
+    <string name="prev_joke">Last</string>
+    <string name="joke_answer_button">tell me!</string>
+
+    <string name="mockup_joke_text">How do you know an elephant has been in the refrigerator?</string>
 </resources>
